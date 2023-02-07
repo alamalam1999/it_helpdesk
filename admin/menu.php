@@ -28,7 +28,7 @@
                     </li>
                     <?php
                     $tanggal = date("Y-m-d");
-                     $tampil2=mysqli_query($koneksi, "select * from tiket where tanggal='$tanggal' and status='open'");
+                     $tampil2=mysqli_query($koneksi, "select * from tiket_gsuite where tanggal='$tanggal' and status='new'");
                         $total2=mysqli_num_rows($tampil2);
                         ?>
                     <li class="no-padding">

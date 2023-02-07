@@ -68,7 +68,7 @@ $_SESSION['start_time'] = time();
           <div class="container">
             <div class="row">
               <div class="col s12 m12 l12">
-                <h5 class="breadcrumbs-title">Data Tiket IT Helpdesk</h5>
+                <h5 class="breadcrumbs-title">Helpdesk G-Suite</h5>
                 <ol class="breadcrumb">
                     <li><a href="index.php">Dashboard</a></li>
                     <li><a href="admin.php">Admin</a></li>
@@ -106,6 +106,7 @@ if (!empty($_FILES["nama_file"]["tmp_name"]))
             ('$user_id','$username','$password','$fullname','$no_hp','$level','$gambar')";
 			$res=mysqli_query($koneksi, $sql) or die (mysqli_error());
 			//echo "Gambar berhasil dikirim ke direktori".$gambar;
+      
             echo '<script>sweetAlert({
 	                                                   title: "Berhasil!", 
                                                         text: "Data Berhasil ditambahkan!", 

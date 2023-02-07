@@ -68,7 +68,7 @@ $_SESSION['start_time'] = time();
           <div class="container">
             <div class="row">
               <div class="col s12 m12 l12">
-                <h5 class="breadcrumbs-title">Data Tiket IT Helpdesk</h5>
+                <h5 class="breadcrumbs-title">Helpdesk G-Suite</h5>
                 <ol class="breadcrumb">
                     <li><a href="index.php">Dashboard</a></li>
                     <li><a href="tiket.php">Tiket</a></li>
@@ -84,8 +84,7 @@ $_SESSION['start_time'] = time();
         <div class="container">
           <?php
             $kd = $_GET['id'];
-			$sql = mysqli_query($koneksi, "SELECT * FROM tiket WHERE id_tiket='$kd'");
-            //$checkfile = mysqli_query($koneksi, " SELECT * FROM tiket WHERE id_tiket='$kd'");
+			$sql = mysqli_query($koneksi, "SELECT * FROM tiket_gsuite WHERE id_tiket='$kd'");
 			if(mysqli_num_rows($sql) == 0){
 				header("Location: tiket.php");
 			}else{
@@ -93,48 +92,37 @@ $_SESSION['start_time'] = time();
 			}
 			if(isset($_POST['update'])){
 				$id_tiket  = $_POST['id_tiket'];
-				$tanggal   = $_POST['tanggal'];
-				$pc_no     = $_POST['pc_no'];
-                $nama      = $_POST['nama'];
-                $email     = $_POST['email'];
-                $departemen= $_POST['departemen'];
-                $problem   = $_POST['problem'];
-                $penanganan = $_POST['penanganan'];
+                $name       = $_POST['name'];
+                $email      = $_POST['email'];
+                $firstname  = $_POST['firstname'];
+                $lastname   = $_POST['lastname'];
+                $no_hp      = $_POST['nohp'];
                 $status     = $_POST['status'];
-                $pic        = $_POST['pic'];
-                $fotopengerjaan        = $_FILES['choosefile']["name"];
-                $tempname              = $_FILES["choosefile"]["tmp_name"];
-
-
-                $folder = "images/".$fotopengerjaan;
                 
     $laporan="<h4><b>Tiket Status : $id_tiket</b></h4>";
     $laporan .="<br/>";
-	$laporan .="<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"3\" cellspacing=\"0\">";
-	$laporan .="<tr>";
-	$laporan .="<td>Tanggal</td><td>:</td><td>$tanggal</td>";
-	$laporan .="</tr>";
+    $laporan .="<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"3\" cellspacing=\"0\">";
     $laporan .="<tr>";
-	$laporan .="<td>PC NO</td><td>:</td><td>$pc_no</td>";
-	$laporan .="</tr>";
-    $laporan .="<tr>";
-	$laporan .="<td>Nama</td><td>:</td><td>$nama</td>";
-	$laporan .="</tr>";
-    $laporan .="<tr>";
-	$laporan .="<td>Departemen</td><td>:</td><td>$departemen</td>";
-	$laporan .="</tr>";
-    $laporan .="<tr>";
-	$laporan .="<td>Problem</td><td>:</td><td>$problem</td>";
-	$laporan .="</tr>";
-    $laporan .="<tr>";
-    $laporan .="<td>Problem</td><td>:</td><td>$penanganan</td>";
-	$laporan .="</tr>";
-    $laporan .="<tr>";
-	$laporan .="<td>Status</td><td>:</td><td>$status</td>";
-	$laporan .="</tr>";
-    $laporan .="<tr>";
-    $laporan .="<td>Pic</td><td>:</td><td>$pic</td>";
+    $laporan .="<td>Tanggal</td><td>:</td><td>$tanggal</td>";
     $laporan .="</tr>";
+    $laporan .="<tr>";
+    $laporan .="<td>Nama</td><td>:</td><td>$name</td>";
+    $laporan .="</tr>";
+    $laporan .="<tr>";
+	  $laporan .="<td>Status</td><td>:</td><td>$status</td>";
+	  $laporan .="</tr>";
+    $laporan .="<tr>";
+	  $laporan .="<td>Status</td><td>:</td><td>$firstname</td>";
+	  $laporan .="</tr>";
+    $laporan .="<tr>";
+	  $laporan .="<td>Status</td><td>:</td><td>$lastname</td>";
+	  $laporan .="</tr>";
+    $laporan .="<tr>";
+	  $laporan .="<td>Status</td><td>:</td><td>$no_hp</td>";
+	  $laporan .="</tr>";
+    $laporan .="<tr>";
+	  $laporan .="<td>Status</td><td>:</td><td>$email</td>";
+	  $laporan .="</tr>";
     
                 
     require_once("../phpmailer/class.phpmailer.php");
@@ -143,8 +131,7 @@ $_SESSION['start_time'] = time();
     $sendmail = new PHPMailer();
     $sendmail->setFrom('adoladil630@gmail.com','IT Helpdesk Tiket'); //email pengirim
     $sendmail->addReplyTo('adoladil630@gmail.com','alam'); //email replay
-    $sendmail->addAddress("$email","$nama"); //email tujuan
-    //$sendmail->AddBCC("$email");
+    $sendmail->addAddress("$email","$name"); //email tujuan
     $sendmail->Subject = "Tiket IT Helpdesk $id_tiket"; //subjek email
     $sendmail->Body=$laporan; //isi pesan dalam format laporan
     $sendmail->isHTML(true);
@@ -155,9 +142,8 @@ $_SESSION['start_time'] = time();
 	else 
 	{
 				
-				$update = mysqli_query($koneksi, "UPDATE tiket SET tanggal='$tanggal', pc_no='$pc_no', nama='$nama', email='$email', departemen='$departemen', problem='$problem', penanganan='$penanganan', status='$status', pic='$pic', fotopengerjaan='$fotopengerjaan' WHERE id_tiket='$kd'") or die(mysqli_error());
+				$update = mysqli_query($koneksi, "UPDATE tiket_gsuite SET tanggal='$tanggal', name='$name', email='$email', status='$status' WHERE id_tiket='$kd'") or die(mysqli_error());
                 if($update){
-                    move_uploaded_file($tempname, $folder);
 					echo '<script>sweetAlert({
 	                                                   title: "Berhasil!", 
                                                         text: "Tiket Berhasil di update!", 
@@ -195,16 +181,9 @@ $_SESSION['start_time'] = time();
                       </div>
                       <div class="row">
                         <div class="input-field col s12">
-                          <!-- <i class="mdi-action-label-outline prefix"></i> -->
-                          <input id="pc_no" name="pc_no" value="<?php echo $row['pc_no']; ?>" type="text" readonly="readonly">
-                          <label for="PC No">PC No</label>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="input-field col s12">
                           <!-- <i class="mdi-action-account-circle prefix"></i> -->
-                          <input id="nama" name="nama" value="<?php echo $row['nama']; ?>" type="text" readonly="readonly">
-                          <label for="Nama">Nama</label>
+                          <input id="nama" name="name" value="<?php echo $row['name']; ?>" type="text" readonly="readonly">
+                          <label for="Nama">Name</label>
                         </div>
                       </div>
                       <div class="row">
@@ -215,68 +194,36 @@ $_SESSION['start_time'] = time();
                         </div>
                       </div>
                       <div class="row">
-                        <div class="input-field col s8">
-                          <!-- <i class="mdi-action-lock-outline prefix"></i> -->
-                          <input id="departemen" name="departemen" value="<?php echo $row['departemen']; ?>" type="text" readonly="readonly">
-                          <label for="Departemen">Departemen</label>
+                        <div class="input-field col s12">
+                          <!-- <i class="mdi-communication-email prefix"></i> -->
+                          <input id="email" name="firstname" value="<?php echo $row['firstname']; ?>" type="email" readonly="readonly">
+                          <label for="Email">First Name</label>
                         </div>
                       </div>
                       <div class="row">
                         <div class="input-field col s12">
-                          <!-- <i class="mdi-action-subject prefix"></i> -->
-                          <textarea id="problem" name="problem" class="materialize-textarea validate" length="120" readonly="readonly"><?php echo $row['problem']; ?></textarea>
-                          <label for="Problem">Problem</label>
+                          <!-- <i class="mdi-communication-email prefix"></i> -->
+                          <input id="email" name="lastname" value="<?php echo $row['lastname']; ?>" type="email" readonly="readonly">
+                          <label for="Email">Last Name</label>
                         </div>
                       </div>
                       <div class="row">
                         <div class="input-field col s12">
-                          <!-- <i class="mdi-action-question-answer prefix"></i> -->
-                          <textarea id="penanganan" name="penanganan" class="materialize-textarea validate" length="120"></textarea>
-                          <label for="Penanganan">Penanganan</label>
+                          <!-- <i class="mdi-communication-email prefix"></i> -->
+                          <input id="email" name="nohp" value="<?php echo $row['no_hp']; ?>" type="email" readonly="readonly">
+                          <label for="Email">No Hp</label>
                         </div>
-                      </div>
-                      <div class="row">
-                            <?php
-                                if ($row['fotopengerjaan'] == null && $row['fotopengerjaan'] == '') {
-                            ?>
-                            <label for="fotoperbaikan">Foto Perbaikan</label>
-                            <div class="input-field col s12">
-                                <input type="file" name="choosefile" value="">
-                            </div>
-                            <?php } else { ?>
-                            <label for="fotoperbaikan">Foto Perbaikan</label>
-                            <div class="input-field col s12">
-                                <a href="/tiket/admin/images/<?php echo $row['fotopengerjaan'] ?>" style="color:#eee; text-align: center;"  data-toggle="tooltip" title="Edit" class="btn-floating waves-effect waves-light light-blue darken-3">view</a>
-                                <input type="file"  name="choosefile"  value="<?php echo $row['fotopengerjaan']; ?>"/>
-                            </div>
-                            <?php } ?>
                       </div>
                       <div class="row">
                         <div class="input-field col s12">
                           
                           <select name="status" id="status" required>
                           <option value="<?php echo $row['status']; ?>"> <?php echo $row['status']; ?></option>
-                          <option value="Open">Open</option>
-                          <option value="Proses">Proses</option>
-                          <option value="Close">Close</option>
+                          <option value="Open">New</option>
+                          <option value="Close">Selesai</option>
                           </select>
                         </div>
                       </div>
-
-                        <div class="row">
-                            <div class="input-field col s12">
-
-                                <select name="pic" id="pic" required>
-                                    <option value="<?php echo $row['pic']; ?>"> <?php echo $row['pic']; ?></option>
-                                    <?php
-                                        $user = mysqli_query($koneksi, "SELECT * from user");
-                                        while( $row=mysqli_fetch_array($user) ) {
-                                    ?>
-                                    <option value="<?php echo $row['username'] ?>"><?php echo $row['username'] ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                        </div>
                         <div class="row">
                           <div class="input-field col s12">
                             <button class="btn cyan waves-effect waves-light right" type="submit" name="update" id="update">Submit

@@ -44,13 +44,12 @@
                                 
             if(isset($_POST['search'])){
               $cari = $_POST['cari'];
-
-              $sql = "SELECT * FROM tiket where email like '%$cari%' OR id_tiket like '%$cari%' OR tanggal like '%$cari%' OR problem like '%$cari%' OR status like '%$cari%' ";     
+              
+              $sql = "SELECT * FROM tiket_gsuite where email like '%$cari%' OR id_tiket like '%$cari%' OR tanggal like '%$cari%' OR name like '%$cari%' OR lokasi like '%$cari%' OR kelas like '%$cari%' OR status like '%$cari%'";     
               
             } else {
-                $sql = "SELECT * FROM tiket";
+                $sql = "SELECT * FROM tiket_gsuite";
             }
-
                                 $batas = 5;
                                 $halaman = isset($_GET['halaman'])?(int)$_GET['halaman'] : 1;
                                 $halaman_awal = ($halaman>1) ? ($halaman * $batas) - $batas : 0;	
@@ -58,11 +57,13 @@
                                 $previous = $halaman - 1;
                                 $next = $halaman + 1;
                                 $result = $conn->query($sql);
+                                // echo $sql;
+                                // var_dump($result);
 
                                 $jumlah_data = mysqli_num_rows($result);
                                 $total_halaman = ceil($jumlah_data / $batas);
                     
-                                $data_pegawai = mysqli_query($conn,"select * from tiket limit $halaman_awal, $batas");
+                                $data_pegawai = mysqli_query($conn,"$sql limit $halaman_awal, $batas");
                                 $nomor = $halaman_awal+1;
 
                                 if ($data_pegawai->num_rows > 0) {
@@ -78,11 +79,22 @@
               <div class="mb-1 text-muted"><?php echo $row["tanggal"]; ?></div>
               <div class="mb-3">
                 <label for=""> <strong>Problem :</strong></label>
-                <p class="card-text mb-auto"><?php echo $row["problem"] . "."; ?></p>
+                <?php
+                  $kind = '';
+
+                  if ($row["name"]== 3) {
+                      $kind = 'Pembuatan Akun G-Suite';
+                  } else if ($row["name"] == 2) {
+                      $kind = 'Lupa Password';
+                  } else {
+                      $kind = 'Akun Ditangguhkan';
+                  }
+                ?>
+                <p class="card-text mb-auto"><?php echo $kind; ?></p>
               </div>
               <div class="mb-3">
                 <label for=""> <strong>Penanganan :</strong></label>
-                <p class="card-text mb-auto"><?php echo ($row["penanganan"] != '') ? $row["penanganan"] : 'Belum di Proses'; ?></p>
+                <p class="card-text mb-auto"><?php echo ($row["kelas"] != '') ? $row["kelas"] : 'Belum di Proses'; ?></p>
               </div>
               <?php
               $background = $row["status"];
@@ -95,13 +107,8 @@
             </div>
             <?php 
 
-                $url = '';
-                if ($row["filename"] != "") {
-                  $url = $row["filename"];
-                } else {
-                  $url = "image200500.png";
-                }
-
+                $url = "image200500.png";
+              
             ?>
             <img class="card-img-right flex-auto d-none d-md-block"  alt="Thumbnail [200x250]" style="width: 200px; height: 250px;" src="image/<?php echo $url; ?>" data-holder-rendered="true">
           </div>

@@ -1,234 +1,332 @@
-<!doctype html>
-<html lang="en" class="no-js">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<?php 
+session_start();
+if (empty($_SESSION['username'])){
+	header('location:../index.php');	
+} else {
+	include "conn.php";
+?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Material Design for Bootstrap</title>
+    <!-- MDB icon -->
     <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
-
-    <link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
-    <link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
-    <script src="js/modernizr.js"></script> <!-- Modernizr -->
-    <script src="js/jquery-2.1.1.js"></script>
-
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
+    <!-- MDB -->
+    <link rel="stylesheet" href="css/mdb.min.css" />
     <script src="dist/sweetalert-dev.js"></script>
     <link rel="stylesheet" href="dist/sweetalert.css">
-
-    <title>Aplikasi G-Suite</title>
-</head>
-<body>
-
-<?php
-include "conn.php";
-
-if(isset($_POST['input'])){
-
-    $id_tiket  = $_POST['id_tiket'];
-    $tanggal   = $_POST['tanggal'];
-    $pc_no     = $_POST['pc_no'];
-    $nama      = $_POST['nama'];
-    $email     = $_POST['email'];
-    $departemen= $_POST['departemen'];
-    $problem   = $_POST['problem'];
-    $filename  = $_FILES["choosefile"]["name"];
-    $tempname  = $_FILES["choosefile"]["tmp_name"];
-    $none      = "";
-    $open      = "new";
-
-    $folder = "image/".$filename;
-
-    $laporan="<h4><b>Tiket Baru : $id_tiket</b></h4>";
-    $laporan .="<br/>";
-    $laporan .="<table width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"3\" cellspacing=\"0\">";
-    $laporan .="<tr>";
-    $laporan .="<td>Tanggal</td><td>:</td><td>$tanggal</td>";
-    $laporan .="</tr>";
-    $laporan .="<tr>";
-    $laporan .="<td>PC NO</td><td>:</td><td>$pc_no</td>";
-    $laporan .="</tr>";
-    $laporan .="<tr>";
-    $laporan .="<td>Nama</td><td>:</td><td>$nama</td>";
-    $laporan .="</tr>";
-    $laporan .="<tr>";
-    $laporan .="<td>Departemen</td><td>:</td><td>$departemen</td>";
-    $laporan .="</tr>";
-    $laporan .="<tr>";
-    $laporan .="<td>Problem</td><td>:</td><td>$problem</td>";
-    $laporan .="</tr>";
-    $laporan .="<tr>";
-    $laporan .="<td>Status/td><td>:</td><td>$open</td>";
-    $laporan .="</tr>";
-
-
-    require_once("phpmailer/class.phpmailer.php");
-    require_once("phpmailer/class.smtp.php");
-
-    $sendmail = new PHPMailer(true);
-    $sendmail->isSMTP();                                            // Send using SMTP
-    $sendmail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
-    $sendmail->SMTPAuth   = true;                                   // Enable SMTP authentication
-    $sendmail->Username   = 'ypap@sekolah-avicenna.sch.id';                     // SMTP username
-    $sendmail->Password   = 'ypap@123';                               // SMTP password
-    $sendmail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
-    $sendmail->setFrom('ypap@sekolah-avicenna.sch.id', 'YPAP');
-    $sendmail->addAddress("$email","$nama"); //email tujuan
-    $sendmail->addReplyTo('ypap@sekolah-avicenna.sch.id', 'YPAP');
-    $sendmail->isHTML(true);                                  // Set email format to HTML
-    $sendmail->Subject = "Tiket G-Suite $id_tiket"; //subjek email
-    $sendmail->Body=$laporan; //isi pesan dalam format laporan
-    if(!$sendmail->Send())
-    {
-        echo "Email gagal dikirim : " . $sendmail->ErrorInfo;
-    }
-    else
-    {
-        //echo "Email berhasil terkirim!";
-        echo "INSERT INTO tiket(id_tiket, tanggal, pc_no, nama, email, departemen, problem, penanganan, status, filename)
-															VALUES('$id_tiket','$tanggal','$pc_no','$nama','$email','$departemen','$problem','$none','$open','$filename')";
-
-
-        $cek = mysqli_query($koneksi, "SELECT * FROM tiket WHERE id_tiket='$id_tiket'");
-        if(mysqli_num_rows($cek) == 0){
-            $insert = mysqli_query($koneksi, "INSERT INTO tiket(id_tiket, tanggal, pc_no, nama, email, departemen, problem, penanganan, status, filename)
-															VALUES('$id_tiket','$tanggal','$pc_no','$nama','$email','$departemen','$problem','$none','$open','$filename')") or die(mysqli_error());
-
-
-
-            if($insert){
-                move_uploaded_file($tempname, $folder);
-                echo '<script>sweetAlert({
-	                                                   title: "Berhasil!", 
-                                                        text: "Tiket Berhasil di kirim, tunggu IT datang!", 
-                                                        type: "success"
-                                                        });</script>';
-            }else{
-                echo '<script>sweetAlert({
-	                                                   title: "Gagal!", 
-                                                        text: "Tiket Gagal di kirim, silahakan coba lagi!", 
-                                                        type: "error"
-                                                        });</script>';
+    <style>
+            .divider:after,
+            .divider:before {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
             }
-        }else{
-            echo '<script>sweetAlert({
-	                                                   title: "Gagal!", 
-                                                        text: "Tiket Sudah ada Sebelumnya!", 
-                                                        type: "error"
-                                                        });</script>';
-        }
-    }
-}
-?>
 
-<form class="cd-form floating-labels" method="POST" enctype="multipart/form-data" action="index.php">
-    <fieldset>
-        <h1>Ticket Permintaan Akun G-Suite</h1>
-        <input type="hidden" name="id_tiket" value="<?php echo date("dmYHis"); ?>" id="id_ticket"/>
-        <input type="hidden" name="tanggal" value="<?php echo date("Y-m-d"); ?>" id="tanggal"/>
-        <div class="icon">
-            <label class="cd-label" for="pc_no">Nama Barang</label>
-            <input class="company" type="text" name="pc_no" id="pc_no" autocomplete="off" required="required">
-        </div>
+            .h-custom {
+            height: calc(100% - 73px);
+            }
 
-        <div class="icon">
-            <label class="cd-label" for="nama">Nama</label>
-            <input class="user" type="text" name="nama" id="nama" autocomplete="off" required="required">
-        </div>
+            @media (max-width: 450px) {
+                .h-custom {
+                height: 100%;
+                }
+            }
 
-        <div class="icon">
-            <label class="cd-label" for="nama">Email</label>
-            <input class="email" type="email" name="email" id="email" autocomplete="off" required="email">
-        </div>
+            .center {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  </head>
+  <body>
 
 
-        <div class="icon">
-            <label class="cd-label" for="cd-email">Departemen</label>
-            <select class="email" name="departemen" id="departemen" required>
-                <option value=""></option>
-                <option value="Research and Development">Research and Development</option>
-                <option value="Human Resources">Human Resources</option>
-                <option value="General Affair">General Affair</option>
-                <option value="Accounting & Tax">Accounting & Tax</option>
-                <option value="Finance">Finance</option>
-                <option value="Building Maintenance">Building & Maintenance</option>
-                <option value="Building Maintenance">Branding & Marketing</option>
-                <option value="Transformasi Digital">Transformasi Digital (IT)</option>
-            </select>
-        </div>
+  <section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="image/bussiness_company.jpg"
+          class="img-fluid" alt="Sample image">
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+     
+          <div class="center d-flex flex-row align-items-center justify-content-center">
+            <h3>HELPDESK PEMBUATAN G-SUITE</h3>
+          </div>
+          <div class="divider d-flex align-items-center my-4"></div>
+          <div class="dashboard">
+            <div id="button1" class="center text-center text-lg-start mt-8 pt-">
+                <a href="#">   
+                    <button type="button" class="btn btn-primary btn-lg"
+                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Pembuatan Akun G-Suite</button>
+                </a> 
+            </div>
+            <div id="button2" class="center text-center text-lg-start mt-4 pt-2">
+                <a href="#">  
+                <button type="button" class="btn btn-primary btn-lg"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;">Lupa Password</button>
+                </a>
+            </div>
+            <div id="button3" class="center text-center text-lg-start mt-4 pt-2">
+                <a href="#">  
+                <button type="button" class="btn btn-primary btn-lg"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;">Akun Ditangguhkan</button>
+                </a>
+            </div>
+          </div>
+
+           <!-- LUPA PASSWORD -->
+                <div class="lupapassword" style="display: none;">
+                <form method="POST" enctype="multipart/form-data" action="index.php">  
+                    <div id="open2" class="center text-center text-lg-start mt-4 pt-2">
+                            <a href="#">  
+                            <button type="button" class="btn btn-primary btn-lg"
+                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Back</button>
+                            </a>
+                    </div>
+                    <input type="hidden" name="id_tiket" value="<?php echo date("dmYHis"); ?>" id="id_ticket"/>
+                    <input type="hidden" name="tanggal" value="<?php echo date("Y-m-d"); ?>" id="tanggal"/>
+                    <div class="center mt-4">
+                        <label for="">LUPA PASSWORD</label>
+                    </div>
+                    <div class="center text-center text-lg-start mt-8 pt-">
+                       <input type="email" name="email1" placeholder="email">
+                    </div>
+
+                    <div class="center text-center text-lg-start mt-4 pt-2">
+                        <a href="#">  
+                        <button type="submit" name="update" id="update" class="btn btn-success btn-lg"
+                        style="padding-left: 2.5rem; padding-right: 2.5rem;" >Kirim</button>
+                        </a>
+                    </div>
+                </form>
+                    <?php        
+                        if(isset($_POST['update'])) {
+                            $email =  $_POST['email1'];
+                            $id_tiket = $_POST['id_tiket'];
+                            $tanggal = $_POST['tanggal'];
+                            $status = "new";
+                            $sql = "INSERT INTO tiket_gsuite(id_tiket,name, email, tanggal,status) VALUES('$id_tiket','2','$email', '$tanggal', '$status')";
+                            $insert = mysqli_query($koneksi, $sql);
+
+                            if ($insert) {
+                                echo '<script>sweetAlert({
+                                    title: "Berhasil Di Kirim!", 
+                                     text: "Tiket Berhasil di kirim!", 
+                                     type: "success"
+                                     });</script>';
+                            } else {
+                                echo '<script>sweetAlert({
+                                    title: "Gagal!", 
+                                     text: "Tiket Gagal di kirim!", 
+                                     type: "error"
+                                     });</script>';
+                            }
+                        }   
+                    ?>
+                </div>
+            <!-- LUPA PASSWORD -->
+
+             <!-- AKUN DITANGGUHKAN -->
+             <div class="akunditangguhkan" style="display: none;">
+             <form method="POST" enctype="multipart/form-data" action="index.php">  
+                    <div id="open3" class="center text-center text-lg-start mt-4 pt-2">
+                            <a href="#">  
+                            <button type="button" class="btn btn-primary btn-lg"
+                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Back</button>
+                            </a>
+                    </div>
+                    <input type="hidden" name="id_tiket" value="<?php echo date("dmYHis"); ?>" id="id_ticket"/>
+                    <input type="hidden" name="tanggal" value="<?php echo date("Y-m-d"); ?>" id="tanggal"/>
+                    <div class="center mt-4">
+                        <label for="">AKUN DITANGGUHKAN</label>
+                    </div>
+                    <div class="center text-center text-lg-start mt-8 pt-">
+                       <input type="email" name="email2" placeholder="email">
+                    </div>
+
+                    <div class="center text-center text-lg-start mt-4 pt-2">
+                        <a href="#">  
+                        <button type="submit" name="update2" id="update2" class="btn btn-success btn-lg"
+                        style="padding-left: 2.5rem; padding-right: 2.5rem;">Kirim</button>
+                        </a>
+                    </div>
+                    </form>
+                    <?php        
+                        if(isset($_POST['update2'])) {
+                            $email =  $_POST['email2'];
+                            $id_tiket = $_POST['id_tiket'];
+                            $tanggal = $_POST['tanggal'];
+                            $status = "new";
+                            $sql = "INSERT INTO tiket_gsuite(id_tiket,name, email, tanggal,status) VALUES('$id_tiket','3','$email', '$tanggal', '$status')";
+                            $insert = mysqli_query($koneksi, $sql);
+
+                            if ($insert) {
+                                echo '<script>sweetAlert({
+                                    title: "Berhasil Di Kirim!", 
+                                     text: "Tiket Berhasil di kirim!", 
+                                     type: "success"
+                                     });</script>';
+                            } else {
+                                echo '<script>sweetAlert({
+                                    title: "Gagal!", 
+                                     text: "Tiket Gagal di kirim!", 
+                                     type: "error"
+                                     });</script>';
+                            }
+                        }   
+                    ?>
+                </div>
+            <!-- AKUN DITANGGUHKAN -->
+
+             <!-- PERMINTAAN PEMBUATAN AKUN -->
+             <div class="permintaanakun" style="display: none;">
+             <form method="POST" enctype="multipart/form-data" action="index.php">  
+                    <div id="open4" class="center text-center text-lg-start mt-4 pt-2">
+                            <a href="#">  
+                            <button type="button" class="btn btn-primary btn-lg"
+                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Back</button>
+                            </a>
+                    </div>
+                    <input type="hidden" name="id_tiket" value="<?php echo date("dmYHis"); ?>" id="id_ticket"/>
+                    <input type="hidden" name="tanggal" value="<?php echo date("Y-m-d"); ?>" id="tanggal"/>
+                    <div class="center mt-4">
+                        <label for="">LUPA PASSWORD</label>
+                    </div>
+                    <div class="center text-center text-lg-start mt-8 pt-">
+                       <input type="text" name="firstname" placeholder="nama depan">
+                    </div>
+                    <div class="center text-center text-lg-start mt-8 pt-">
+                       <input type="text" name="lastname" placeholder="nama belakang">
+                    </div>
+                    <div class="center text-center text-lg-start mt-8 pt-">
+                       <input type="number" name="nohp" placeholder="nomor hp">
+                    </div>
+                    <div class="center text-center text-lg-start mt-8 pt-">
+                       <input type="email" name="email" placeholder="email">
+                    </div>
+
+                    <div class="center text-center text-lg-start mt-4 pt-2">
+                        <a href="#">  
+                        <button type="submit" name="update3" id="update2" class="btn btn-success btn-lg"
+                        style="padding-left: 2.5rem; padding-right: 2.5rem;">Kirim</button>
+                        </a>
+                    </div>
+                    <?php        
+                        if(isset($_POST['update3'])) {
+                            $firstname = $_POST['firstname'];
+                            $lastname = $_POST['lastname'];
+                            $nohp   = $_POST['nohp'];
+                            $email =  $_POST['email'];
+                            $id_tiket = $_POST['id_tiket'];
+                            $tanggal = $_POST['tanggal'];
+                            $status = "new";
+                            $sql = "INSERT INTO tiket_gsuite(id_tiket,name,firstname,lastname,no_hp, email, tanggal,status) VALUES('$id_tiket','1','$firstname','$lastname','$nohp','$email', '$tanggal', '$status')";
+                            $insert = mysqli_query($koneksi, $sql);
+
+                            if ($insert) {
+                                echo '<script>sweetAlert({
+                                    title: "Berhasil Di Kirim!", 
+                                     text: "Tiket Berhasil di kirim!", 
+                                     type: "success"
+                                     });</script>';
+                            } else {
+                                echo '<script>sweetAlert({
+                                    title: "Gagal!", 
+                                     text: "Tiket Gagal di kirim!", 
+                                     type: "error"
+                                     });</script>';
+                            }
+                        }   
+                    ?>
+                </div>
+            <!-- PERMINTAAN PEMBUATAN AKUN -->
+
+          <div class="divider d-flex align-items-center my-4"></div>
+                    <div class="center text-center text-lg-start mt-3 pt-2">
+                        <a href="datatiket.php">Data Tiket</a>
+                    </div>
+      </div>
+
+    </div>
+  </div>
+  <div
+    class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+    <!-- Copyright -->
+    <div class="text-white mb-3 mb-md-0">
+      Copyright © 2020. All rights reserved.
+    </div>
+    <!-- Copyright -->
+
+    <!-- Right -->
+    <div>
+      <a href="#!" class="text-white me-4">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="#!" class="text-white me-4">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="#!" class="text-white me-4">
+        <i class="fab fa-google"></i>
+      </a>
+      <a href="#!" class="text-white">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </div>
+    <!-- Right -->
+  </div>
+</section>
+
+    <!-- MDB -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
+  </body>
+
+  <script>
 
 
-        <div class="icon">
-            <label class="cd-label" for="cd-textarea">Permasalahan</label>
-            <textarea class="message" name="problem" id="problem" required></textarea>
-        </div>
-
-        <div class="icon">
-            <label for="cd-textarea">Upload File</label>
-            <input type="file" name="choosefile" value="">
-        </div>
-
-        <div>
-            <a href="datatiket.php">Data Ticket</a>
-            <input type="submit" onclick="notifikasi()" name="input" id="input" value="Send Message">
-        </div>
-    </fieldset>
-
-</form>
-<center>Copyright &copy; <a href="#">2022 Transformasi Digital- BPS YPAP</a></center><br /><br />
-<script src="js/main.js"></script> <!-- Resource jQuery -->
-
-<!-- <script>
-sweetAlert("Hello world!");
-</script> -->
-
-
-
-<!-- --><?php
-//
-// if(isset($_POST['Submit'])) {
-//     $id_tiket = $_POST['id_tiket'];
-//     $tanggal = $_POST['tanggal'];
-//     $nama = $_POST['nama'];
-//     $email = $_POST['email'];
-//     $departemen = $_POST['departemen'];
-//     $problem = $_POST['problem'];
-//
-//     // include database connection file
-//     include_once("config.php");
-//
-//     // Insert user data into table
-//     $result = mysqli_query($koneksi, "INSERT INTO tiket(name,email,mobile) VALUES('$id_tiket','$tanggal','$nama','$email','$departemen','$problem')");
-//
-//     // Show message when user added
-//     echo $result;
-// }
-// ?>
-
-<script>
-    $(document).ready(function() {
-        if (Notification.permission !== "granted")
-            Notification.requestPermission();
+    $("#button2").click(function(){
+        $(".dashboard").hide();
+        $(".lupapassword").show();
+    });
+    $("#open2").click(function() {
+        $(".dashboard").show();
+        $(".lupapassword").hide();
     });
 
-    function notifikasi() {
-        if (!Notification) {
-            alert('Browsermu tidak mendukung Web Notification.');
-            return;
-        }
-        if (Notification.permission !== "granted")
-            Notification.requestPermission();
-        else {
-            var notifikasi = new Notification('Permintaan Akun G-Suite', {
-                icon: 'img/logo.jpg',
-                body: "Tiket Baru dari <?php echo $nama; ?>",
-            });
-            notifikasi.onclick = function () {
-                window.open("http://tsuchiya-mfg.com");
-            };
-            setTimeout(function(){
-                notifikasi.close();
-            }, 1000);
-        }
-    };
-</script>
-</body>
+    $("#button3").click(function(){
+        $(".dashboard").hide();
+        $(".akunditangguhkan").show();
+    });
+    $("#open3").click(function() {
+        $(".dashboard").show();
+        $(".akunditangguhkan").hide();
+    });
+
+    $("#button1").click(function(){
+        $(".dashboard").hide();
+        $(".permintaanakun").show();
+    });
+    $("#open4").click(function(){
+        $(".dashboard").show();
+        $(".permintaanakun").hide();
+    });
+
+
+  </script>
 </html>
+
+<?php } ?>

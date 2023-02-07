@@ -70,7 +70,7 @@ $_SESSION['start_time'] = time();
                     <!--card stats start-->
                     <div id="card-stats">
                         <div class="row">
-                        <?php $tampil=mysqli_query($koneksi, "select * from tiket where status='open'");
+                        <?php $tampil=mysqli_query($koneksi, "select * from tiket_gsuite where status='open'");
                         $total=mysqli_num_rows($tampil);
                         ?>
                             <div class="col s12 m6 l3">
@@ -86,7 +86,7 @@ $_SESSION['start_time'] = time();
                                     </div>
                                 </div>
                             </div>
-                            <?php $tampil1=mysqli_query($koneksi, "select * from tiket where status='close'");
+                            <?php $tampil1=mysqli_query($koneksi, "select * from tiket_gsuite where status='close'");
                         $total1=mysqli_num_rows($tampil1);
                         ?>
                             <div class="col s12 m6 l3">
@@ -103,7 +103,7 @@ $_SESSION['start_time'] = time();
                                     </div>
                                 </div>
                             </div>
-                            <?php $tampil2=mysqli_query($koneksi, "select * from tiket order by id_tiket");
+                            <?php $tampil2=mysqli_query($koneksi, "select * from tiket_gsuite order by id_tiket");
                         $total2=mysqli_num_rows($tampil2);
                         ?>
                             <div class="col s12 m6 l3">
@@ -137,114 +137,7 @@ $_SESSION['start_time'] = time();
                             </div>
                         </div>
                     </div>
-                    <!--card stats end-->
 
-                    <!-- //////////////////////////////////////////////////////////////////////////// -->
-
-                    <!--card widgets start-->
-         <!--           <div id="card-widgets">
-                        <div class="row">
-
-                            <div class="col s12 m4 14">
-                                <ul id="task-card" class="collection with-header">
-                                    <li class="collection-header cyan">
-                                        <h4 class="task-card-title">My Task</h4>
-                                        <p class="task-card-date">March 26, 2015</p>
-                                    </li>
-                                    <li class="collection-item dismissable">
-                                        <input type="checkbox" id="task1" />
-                                        <label for="task1">Create Mobile App UI. <a href="#" class="secondary-content"><span class="ultra-small">Today</span></a>
-                                        </label>
-                                        <span class="task-cat teal">Mobile App</span>
-                                    </li>
-                                    <li class="collection-item dismissable">
-                                        <input type="checkbox" id="task2" />
-                                        <label for="task2">Check the new API standerds. <a href="#" class="secondary-content"><span class="ultra-small">Monday</span></a>
-                                        </label>
-                                        <span class="task-cat purple">Web API</span>
-                                    </li>
-                                    <li class="collection-item dismissable">
-                                        <input type="checkbox" id="task3" checked="checked" />
-                                        <label for="task3">Check the new Mockup of ABC. <a href="#" class="secondary-content"><span class="ultra-small">Wednesday</span></a>
-                                        </label>
-                                        <span class="task-cat pink">Mockup</span>
-                                    </li>
-                                    <li class="collection-item dismissable">
-                                        <input type="checkbox" id="task4" checked="checked" disabled="disabled" />
-                                        <label for="task4">I did it !</label>
-                                        <span class="task-cat cyan">Mobile App</span>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="col s12 m4 14">
-                                <ul id="task-card" class="collection with-header">
-                                    <li class="collection-header cyan">
-                                        <h4 class="task-card-title">My Task</h4>
-                                        <p class="task-card-date">March 26, 2015</p>
-                                    </li>
-                                    <li class="collection-item dismissable">
-                                        <input type="checkbox" id="task1" />
-                                        <label for="task1">Create Mobile App UI. <a href="#" class="secondary-content"><span class="ultra-small">Today</span></a>
-                                        </label>
-                                        <span class="task-cat teal">Mobile App</span>
-                                    </li>
-                                    <li class="collection-item dismissable">
-                                        <input type="checkbox" id="task2" />
-                                        <label for="task2">Check the new API standerds. <a href="#" class="secondary-content"><span class="ultra-small">Monday</span></a>
-                                        </label>
-                                        <span class="task-cat purple">Web API</span>
-                                    </li>
-                                    <li class="collection-item dismissable">
-                                        <input type="checkbox" id="task3" checked="checked" />
-                                        <label for="task3">Check the new Mockup of ABC. <a href="#" class="secondary-content"><span class="ultra-small">Wednesday</span></a>
-                                        </label>
-                                        <span class="task-cat pink">Mockup</span>
-                                    </li>
-                                    <li class="collection-item dismissable">
-                                        <input type="checkbox" id="task4" checked="checked" disabled="disabled" />
-                                        <label for="task4">I did it !</label>
-                                        <span class="task-cat cyan">Mobile App</span>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="col s12 m4 l4">
-                                <div id="profile-card" class="card">
-                                    <div class="card-image waves-effect waves-block waves-light">
-                                        <img class="activator" src="images/user-bg.jpg" alt="user background">
-                                    </div>
-                                    <div class="card-content">
-                                        <img src="images/avatar.jpg" alt="" class="circle responsive-img activator card-profile-image">
-                                        <a class="btn-floating activator btn-move-up waves-effect waves-light darken-2 right">
-                                            <i class="mdi-editor-mode-edit"></i>
-                                        </a>
-
-                                        <span class="card-title activator grey-text text-darken-4">Roger Waters</span>
-                                        <p><i class="mdi-action-perm-identity cyan-text text-darken-2"></i> Project Manager</p>
-                                        <p><i class="mdi-action-perm-phone-msg cyan-text text-darken-2"></i> +1 (612) 222 8989</p>
-                                        <p><i class="mdi-communication-email cyan-text text-darken-2"></i> mail@domain.com</p>
-
-                                    </div>
-                                    <div class="card-reveal">
-                                        <span class="card-title grey-text text-darken-4">Roger Waters <i class="mdi-navigation-close right"></i></span>
-                                        <p>Here is some more information about this card.</p>
-                                        <p><i class="mdi-action-perm-identity cyan-text text-darken-2"></i> Project Manager</p>
-                                        <p><i class="mdi-action-perm-phone-msg cyan-text text-darken-2"></i> +1 (612) 222 8989</p>
-                                        <p><i class="mdi-communication-email cyan-text text-darken-2"></i> mail@domain.com</p>
-                                        <p><i class="mdi-social-cake cyan-text text-darken-2"></i> 18th June 1990</p>
-                                        <p><i class="mdi-device-airplanemode-on cyan-text text-darken-2"></i> BAR - AUS</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>-->
-                    <!--card widgets end-->
-
-                    <!-- //////////////////////////////////////////////////////////////////////////// -->
-
-                    <!--work collections start-->
                     <div id="work-collections">
                         <div class="row">
                             <div class="col s12 m12 l6">
@@ -255,12 +148,12 @@ $_SESSION['start_time'] = time();
                                         <?php
                                                 echo $_SESSION['username'];
                                         ?>
-                                        <p>Status <b style="color: red;">Open</b></p>
+                                        <p>Status <b style="color: red;">New</b></p>
                                         <!-- <a href="#" class="secondary-content"><i class="mdi-action-grade"></i></a>-->
                                     </li>
                                     <?php
                     $tanggal = date("Y-m-d");
-                    $query= "SELECT * FROM tiket WHERE status='open' limit 7";
+                    $query= "SELECT * FROM tiket_gsuite WHERE status='new' limit 5";
                     $tampil=mysqli_query($koneksi, $query) or die(mysqli_error());
                     ?>
                     <?php
@@ -270,8 +163,18 @@ $_SESSION['start_time'] = time();
                                     <li class="collection-item">
                                         <div class="row">
                                             <div class="col s9">
-                                                <p class="collections-title"><?php echo $no; ?>. <?php echo $data['nama']; ?> | <?php echo $data['departemen']; ?></p>
-                                                <p class="collections-content">Problem : <?php echo $data['problem']; ?></p>
+                                            <?php
+                                                $kind = '';
+                                                if ($data["name"]== 3) {
+                                                    $kind = 'Pembuatan Akun G-Suite';
+                                                } else if ($data["name"] == 2) {
+                                                    $kind = 'Lupa Password';
+                                                } else {
+                                                    $kind = 'Akun Ditangguhkan';
+                                                }
+                                            ?>
+                                                <p class="collections-title"><?php echo $no; ?>. <?php echo $kind; ?> | <?php echo $data["tanggal"]; ?></p>
+                                                <p class="collections-content">Problem : <?php echo $data['email']; ?></p>
                                             </div>
                                             <div class="col s3">
                                             <?php if($data['status'] == "open" ){
@@ -298,7 +201,7 @@ $_SESSION['start_time'] = time();
                                     </li>
                     <?php
                     $tanggal = date("Y-m-d");
-                    $query1= "SELECT * FROM tiket WHERE status='close' limit 7";
+                    $query1= "SELECT * FROM tiket_gsuite WHERE status='close' limit 7";
                     $tampil1=mysqli_query($koneksi, $query1) or die(mysqli_error());
                     ?>
                     <?php
@@ -308,8 +211,18 @@ $_SESSION['start_time'] = time();
                                     <li class="collection-item">
                                         <div class="row">
                                             <div class="col s9">
-                                                <p class="collections-title"><?php echo $no; ?>. <?php echo $data1['nama']; ?> | <?php echo $data1['departemen']; ?></p>
-                                                <p class="collections-content">Problem : <?php echo $data1['problem']; ?></p>
+                                            <?php
+                                                $kind = '';
+                                                if ($data1["name"]== 3) {
+                                                    $kind = 'Pembuatan Akun G-Suite';
+                                                } else if ($data1["name"] == 2) {
+                                                    $kind = 'Lupa Password';
+                                                } else {
+                                                    $kind = 'Akun Ditangguhkan';
+                                                }
+                                            ?>
+                                                <p class="collections-title"><?php echo $no; ?>. <?php echo $kind; ?> | <?php echo $data1['tanggal']; ?></p>
+                                                <p class="collections-content">Problem : <?php echo $data1['email']; ?></p>
                                             </div>
                                             <div class="col s3">
                                             <?php if($data1['status'] == "open" ){
@@ -322,8 +235,8 @@ $_SESSION['start_time'] = time();
                                         </div>
                                     </li>
                                                  <?php
-              }
-              ?>
+                                }
+                                ?>
                                 </ul>
                             </div>
                         </div>

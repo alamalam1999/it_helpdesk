@@ -68,7 +68,7 @@ if (empty($_SESSION['username'])){
                 <div class="container">
                     <div class="row">
                         <div class="col s12 m12 l12">
-                            <h5 class="breadcrumbs-title">Data Tiket IT Helpdesk</h5>
+                            <h5 class="breadcrumbs-title">Helpdesk G-Suite</h5>
                             <ol class="breadcrumb">
                                 <li><a href="index.php">Dashboard</a></li>
                                 <li><a href="tiket.php">Tiket</a></li>
@@ -91,7 +91,7 @@ if (empty($_SESSION['username'])){
                 <?php
                 if(isset($_GET['aksi']) == 'delete'){
                     $id = $_GET['id'];
-                    $cek = mysqli_query($koneksi, "SELECT * FROM tiket WHERE id_tiket='$id'");
+                    $cek = mysqli_query($koneksi, "SELECT * FROM tiket_gsuite WHERE id_tiket='$id'");
                     if(mysqli_num_rows($cek) == 0){
                         echo '<script>sweetAlert({
 	                                                   title: "Ups!", 
@@ -99,7 +99,7 @@ if (empty($_SESSION['username'])){
                                                         type: "error"
                                                         });</script>';
                     }else{
-                        $delete = mysqli_query($koneksi, "DELETE FROM tiket WHERE id_tiket='$id'");
+                        $delete = mysqli_query($koneksi, "DELETE FROM tiket_gsuite WHERE id_tiket='$id'");
                         if($delete){
                             echo '<script>sweetAlert({
 	                                                   title: "Berhasil!", 
@@ -129,15 +129,10 @@ if (empty($_SESSION['username'])){
 
                                     <th>Id Tiket</th>
                                     <th>Tanggal</th>
-                                    <th>PC No</th>
-                                    <th>Nama</th>
+                                    <th>Name</th>
                                     <th>Email</th>
-                                    <th>Departemen</th>
-                                    <th>Problem</th>
                                     <th>Status</th>
-                                    <th>Pic</th>
-                                    <th>View</th>
-                                    <th>Tool</th>
+                                    <th>Action</th>
 
 
                                 </tr>
